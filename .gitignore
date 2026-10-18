@@ -5,3 +5,13 @@ samples/*.wav
 *.srt
 *.zip
 .DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+.media-index/
+demo-output/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.egg-info/
+test-models/

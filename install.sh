@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="Supersynergy/universal-media-editor-skill"
-RAW="https://raw.githubusercontent.com/${REPO}/main"
+REPO="Supersynergy/media-edit"
+RAW="https://raw.githubusercontent.com/${REPO}/${ME_INSTALL_REF:-main}"
 INSTALL_DIR="${ME_INSTALL_DIR:-$HOME/.local/share/media-edit}"
 SKILL_DIR="${ME_SKILL_DIR:-$HOME/.gg/skills}"
 
@@ -30,14 +30,24 @@ if command -v uv >/dev/null 2>&1; then
     uv tool install "$t" 2>&1 | tail -1 || warn "skip $t"
   done
 else
-  warn "uv not found — install from https://astral.sh/uv  (then re-run to add $PY_TOOLS)"
+  warn "uv not found — install from https://astral.sh/uv  (then re-run to add ${PY_TOOLS[*]})"
 fi
 
 bold "📥 Fetching media-edit.sh"
+STAGE_DIR="$(mktemp -d)"
+trap 'rm -rf "$STAGE_DIR"' EXIT
+mkdir -p "$STAGE_DIR/media_index"
+curl -fsSL "$RAW/media-edit.sh" -o "$STAGE_DIR/media-edit.sh"
+for module in __init__ __main__ cli transcripts models analysis highlights store indexing review; do
+  curl -fsSL "$RAW/media_index/${module}.py" -o "$STAGE_DIR/media_index/${module}.py"
+done
 mkdir -p "$INSTALL_DIR"
-curl -fsSL "$RAW/media-edit.sh" -o "$INSTALL_DIR/media-edit.sh"
+cp "$STAGE_DIR/media-edit.sh" "$INSTALL_DIR/media-edit.sh"
+cp -R "$STAGE_DIR/media_index" "$INSTALL_DIR/"
 chmod +x "$INSTALL_DIR/media-edit.sh"
-ok "$INSTALL_DIR/media-edit.sh"
+ok "Shell and local catalog installed (no model downloads)"
+python3 -c 'import sys; sys.exit(sys.version_info < (3,12))' >/dev/null 2>&1 \
+  || warn "Catalog commands need Python 3.12+: brew install python"
 
 mkdir -p "$INSTALL_DIR/recipes"
 for r in podcast tiktok cinema; do
@@ -46,9 +56,11 @@ done
 ok "recipes/ installed"
 
 if mkdir -p "$SKILL_DIR" 2>/dev/null; then
-  curl -fsSL "$RAW/skill/universal-media-editor.md" -o "$SKILL_DIR/universal-media-editor.md" 2>/dev/null \
-    && ok "Skill → $SKILL_DIR/universal-media-editor.md" \
-    || warn "Skill not installed (optional)"
+  if curl -fsSL "$RAW/skill/universal-media-editor.md" -o "$SKILL_DIR/universal-media-editor.md" 2>/dev/null; then
+    ok "Skill → $SKILL_DIR/universal-media-editor.md"
+  else
+    warn "Skill not installed (optional)"
+  fi
 fi
 
 SHELL_RC=""
