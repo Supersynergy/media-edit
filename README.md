@@ -1,6 +1,6 @@
 <div align="center">
 
-![Media Edit](docs/assets/cover.png)
+![media-edit](docs/assets/cover.png)
 
 # `media-edit`
 
