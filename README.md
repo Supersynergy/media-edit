@@ -1,23 +1,6 @@
 <div align="center">
 
-```
-                                                       ┌────────────────┐
-                                                       │  $ media-edit  │
-                                                       └────────────────┘
-
-      ███▄ ▄███▓▓█████ ▓█████▄  ██▓ ▄▄▄        ▓█████ ▓█████▄  ██▓▄▄▄█████▓
-     ▓██▒▀█▀ ██▒▓█   ▀ ▒██▀ ██▌▓██▒▒████▄      ▓█   ▀ ▒██▀ ██▌▓██▒▓  ██▒ ▓▒
-     ▓██    ▓██░▒███   ░██   █▌▒██▒▒██  ▀█▄    ▒███   ░██   █▌▒██▒▒ ▓██░ ▒░
-     ▒██    ▒██ ▒▓█  ▄ ░▓█▄   ▌░██░░██▄▄▄▄██   ▒▓█  ▄ ░▓█▄   ▌░██░░ ▓██▓ ░
-     ▒██▒   ░██▒░▒████▒░▒████▓ ░██░ ▓█   ▓██▒  ░▒████▒░▒████▓ ░██░  ▒██▒ ░
-     ░ ▒░   ░  ░░░ ▒░ ░ ▒▒▓  ▒ ░▓   ▒▒   ▓▒█░  ░░ ▒░ ░ ▒▒▓  ▒ ░▓    ▒ ░░
-     ░  ░      ░ ░ ░  ░ ░ ▒  ▒  ▒ ░  ▒   ▒▒ ░   ░ ░  ░ ░ ▒  ▒  ▒ ░    ░
-     ░      ░      ░    ░ ░  ░  ▒ ░  ░   ▒        ░    ░ ░  ░  ▒ ░  ░
-            ░      ░  ░   ░     ░        ░  ░     ░  ░   ░     ░
-                        ░                               ░
-
-              universal media editor — cut · caption · polish
-```
+![Media Edit](docs/assets/cover.png)
 
 # `media-edit`
 
@@ -37,6 +20,8 @@ media-edit polish raw_podcast.mp4
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 </div>
+
+**🧭 Explore:** [60 seconds](#60-seconds) · [Install](#install) · [Recipes](#recipes) · [AI agents](#ai-agent-integration) · [Limits](#honest-limits)
 
 ---
 
