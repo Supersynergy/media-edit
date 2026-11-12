@@ -62,19 +62,55 @@ Read [install.sh](install.sh) first, it's ~70 lines. Uninstall any time with the
 
 ## What each command owns
 
-| Command            | Tool underneath             | Why it's the right pick                                         |
-|--------------------|-----------------------------|------------------------------------------------------------------|
-| `cut`              | `auto-editor`               | Speech-aware, beats `ffmpeg silenceremove` by miles              |
-| `trim`             | `ffmpeg -c copy`            | Zero re-encode, frame-accurate on keyframes                      |
-| `concat`           | `ffmpeg -f concat -c copy`  | Lossless join for compatible streams                             |
-| `transcribe`       | `whisper.cpp` (Metal)       | 8–16× faster than CPU on Apple Silicon, no cloud                 |
-| `caption`          | `whisper.cpp` + `ffmpeg ASS`| Generates then burns styled subs in one call                     |
-| `denoise`          | `ffmpeg anlmdn`             | Non-local-means, best built-in denoiser                          |
-| `master`           | `ffmpeg-normalize`          | Proper 2-pass EBU R128, broadcast-compliant                      |
-| `stems`            | `demucs htdemucs`           | SOTA local source separation                                     |
-| `scenes`           | `PySceneDetect`             | Content-aware, frame-accurate splits                             |
-| `pitch`            | `rubberband`                | SOTA independent pitch/tempo                                     |
-| `syncsub`          | `alass`                     | Magical re-sync without needing a transcript                     |
+<details>
+<summary><strong>📋 Show 11 entries</strong></summary>
+
+- **`cut`**<br>
+  Tool underneath: `auto-editor`<br>
+  Why it's the right pick: Speech-aware, beats `ffmpeg silenceremove` by miles
+
+- **`trim`**<br>
+  Tool underneath: `ffmpeg -c copy`<br>
+  Why it's the right pick: Zero re-encode, frame-accurate on keyframes
+
+- **`concat`**<br>
+  Tool underneath: `ffmpeg -f concat -c copy`<br>
+  Why it's the right pick: Lossless join for compatible streams
+
+- **`transcribe`**<br>
+  Tool underneath: `whisper.cpp` (Metal)<br>
+  Why it's the right pick: 8–16× faster than CPU on Apple Silicon, no cloud
+
+- **`caption`**<br>
+  Tool underneath: `whisper.cpp` + `ffmpeg ASS`<br>
+  Why it's the right pick: Generates then burns styled subs in one call
+
+- **`denoise`**<br>
+  Tool underneath: `ffmpeg anlmdn`<br>
+  Why it's the right pick: Non-local-means, best built-in denoiser
+
+- **`master`**<br>
+  Tool underneath: `ffmpeg-normalize`<br>
+  Why it's the right pick: Proper 2-pass EBU R128, broadcast-compliant
+
+- **`stems`**<br>
+  Tool underneath: `demucs htdemucs`<br>
+  Why it's the right pick: SOTA local source separation
+
+- **`scenes`**<br>
+  Tool underneath: `PySceneDetect`<br>
+  Why it's the right pick: Content-aware, frame-accurate splits
+
+- **`pitch`**<br>
+  Tool underneath: `rubberband`<br>
+  Why it's the right pick: SOTA independent pitch/tempo
+
+- **`syncsub`**<br>
+  Tool underneath: `alass`<br>
+  Why it's the right pick: Magical re-sync without needing a transcript
+
+</details>
+
 
 ---
 
@@ -123,13 +159,36 @@ Bundled recipes: **podcast** (-16 LUFS, modern captions), **tiktok** (-14 LUFS, 
 
 `me_info` detects your Mac on first use:
 
-| Tier | Chip | Whisper default | Encoder |
-|------|------|-----------------|---------|
-| 🏆 Ultra | M*-Ultra | `large-v3` | `hevc_videotoolbox` |
-| ⚡ Max | M*-Max | `large-v3` (≥32 GB) | `hevc_videotoolbox` |
-| 💪 Pro | M*-Pro | `medium.en` | `hevc_videotoolbox` |
-| 🍎 Base | M1/M2/M3/M4 | `base.en` | `hevc_videotoolbox` |
-| 🖥 Intel | Intel Mac | `tiny.en` or `base.en` | `libx264` |
+<details>
+<summary><strong>📋 Show 5 entries</strong></summary>
+
+- **🏆 Ultra**<br>
+  Chip: M*-Ultra<br>
+  Whisper default: `large-v3`<br>
+  Encoder: `hevc_videotoolbox`
+
+- **⚡ Max**<br>
+  Chip: M*-Max<br>
+  Whisper default: `large-v3` (≥32 GB)<br>
+  Encoder: `hevc_videotoolbox`
+
+- **💪 Pro**<br>
+  Chip: M*-Pro<br>
+  Whisper default: `medium.en`<br>
+  Encoder: `hevc_videotoolbox`
+
+- **🍎 Base**<br>
+  Chip: M1/M2/M3/M4<br>
+  Whisper default: `base.en`<br>
+  Encoder: `hevc_videotoolbox`
+
+- **🖥 Intel**<br>
+  Chip: Intel Mac<br>
+  Whisper default: `tiny.en` or `base.en`<br>
+  Encoder: `libx264`
+
+</details>
+
 
 Override anytime: `ME_WHISPER_MODEL=large-v3 media-edit transcribe …`
 
