@@ -248,3 +248,7 @@ MIT, by [Maxim Supersynergy](https://github.com/Supersynergy).
 *If this saved you an hour of editing, star it ⭐ and tell a friend who still does it by hand.*
 
 </div>
+
+## Additional documentation
+
+[docs/reference](docs/reference/)
