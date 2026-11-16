@@ -1,0 +1,32 @@
+name: local-video-search
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  offline-core:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Standard-library core and real FFmpeg integration
+        run: python -W error::ResourceWarning -m unittest discover -s tests -v
+      - name: Shell routing and previous commands
+        shell: bash
+        run: |
+          bash -n media-edit.sh install.sh uninstall.sh
+          source media-edit.sh
+          media-edit library doctor
+          me_help

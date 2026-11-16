@@ -11,6 +11,16 @@
 : "${ME_WHISPER_MODEL:=base.en}"   # tiny|base|small|medium|large-v3
 : "${ME_SOUND:=1}"
 
+# Locate the optional catalog package when sourced from a checkout or installation.
+if [ -z "${ME_LIBRARY_ROOT:-}" ]; then
+  if [ -n "${BASH_VERSION:-}" ]; then
+    ME_LIBRARY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  elif [ -n "${ZSH_VERSION:-}" ]; then
+    # shellcheck disable=SC2016
+    eval 'ME_LIBRARY_ROOT="${${(%):-%x}:A:h}"'
+  fi
+fi
+
 _me_init() {
   [ -n "$ME_TIER" ] && return
   local chip
@@ -281,7 +291,8 @@ me_pitch() {
 # ════════════════════════════════════════════════════════════════
 me_syncsub() {
   _me_init
-  local video="$1" subs="$2" output="${3:-${subs%.*}_synced.${subs##*.}}"
+  local video="$1" subs="$2"
+  local output="${3:-${subs%.*}_synced.${subs##*.}}"
   [ -f "$video" ] && [ -f "$subs" ] || { echo "Usage: me_syncsub <video> <subs.srt> [out.srt]"; return 1; }
   _me_need alass "brew install alass" || return 1
   echo "🔧 Resync subs (alass) → $output"
@@ -389,6 +400,7 @@ me_recipe() {
 # ════════════════════════════════════════════════════════════════
 me_stats() {
   [ -f "$ME_STATS_FILE" ] || { echo "No stats yet. Edit something first!"; return; }
+  # shellcheck disable=SC1090
   source "$ME_STATS_FILE"
   echo "🎬 Lifetime media-edit ops: ${total:-0}"
   [ -f "$HOME/.media-edit/log" ] && echo "Most-used:" && \
@@ -444,6 +456,14 @@ INFO & FUN
   me_stats                          lifetime ops counter
   me_joke / me_zen                  🥚
   me_help                           this screen
+
+LOCAL VIDEO LIBRARY (Python 3.12+, FFmpeg; optional local models)
+  me_index <video-or-folder> [opts]  persistent multimodal catalog
+  me_search <query> [opts]           words, topics or events across videos
+  me_highlights [opts]              explained, non-redundant candidates
+  me_review [opts]                  local search/playback at 127.0.0.1:8765
+  me_export_highlights --out <dir>   previews, JSON and LosslessCut CSV
+  me_library doctor                 inspect tools and optional backends
 
 ENV
   ME_WHISPER_MODEL=auto|tiny.en|base.en|medium.en|large-v3
@@ -681,6 +701,20 @@ me_shorts() {
 }
 
 # Router for `media-edit <cmd>` style CLI invocation
+me_library() {
+  local root="${ME_LIBRARY_ROOT:-${ME_INSTALL_DIR:-$HOME/.local/share/media-edit}}"
+  local python="${ME_INDEX_PYTHON:-python3}"
+  _me_need "$python" "brew install python" || return 1
+  [ -d "$root/media_index" ] || { echo "Missing media_index package; update the checkout or re-run install.sh" >&2; return 1; }
+  PYTHONPATH="$root${PYTHONPATH:+:$PYTHONPATH}" "$python" -m media_index "$@"
+}
+
+me_index() { me_library index "$@"; }
+me_search() { me_library search "$@"; }
+me_highlights() { me_library highlights "$@"; }
+me_review() { me_library serve "$@"; }
+me_export_highlights() { me_library export "$@"; }
+
 media-edit() {
   local cmd="$1"; shift || true
   case "$cmd" in
@@ -711,6 +745,12 @@ media-edit() {
     broll)      me_broll "$@" ;;
     sfx-init)   me_sfx_init ;;
     captions-word) me_captions_word "$@" ;;
+    library)    me_library "$@" ;;
+    index)      me_index "$@" ;;
+    search)     me_search "$@" ;;
+    highlights) me_highlights "$@" ;;
+    review)     me_review "$@" ;;
+    export-highlights) me_export_highlights "$@" ;;
     *)          echo "Unknown command: $cmd"; me_help; return 1 ;;
   esac
 }

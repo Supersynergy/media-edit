@@ -39,7 +39,35 @@ media-edit pitch voice.wav 2 1.0           # +2 semitones, keep tempo
 media-edit syncsub movie.mkv subs.srt      # fix subtitle drift (alass)
 ```
 
-That's the whole API. Each primitive routes to the best-in-class local tool. `polish` chains the important ones.
+Each editing primitive routes to a local tool. `polish` chains the important ones.
+
+## Local video library and multimodal highlights
+
+Index a whole folder, search across recordings, and review scored moments with source timestamps:
+
+```bash
+source media-edit.sh
+me_index "/Volumes/Videos"               # use existing JSON/SRT/VTT transcripts
+me_search "Automatisierung"              # cross-video word search
+me_search "lachen" --mode event          # event search with evidence provenance
+me_review                               # http://127.0.0.1:8765
+me_export_highlights --out highlights --clips
+```
+
+The catalog combines transcripts, audio events, RMS trends, scene boundaries, motion and visual features.
+Optional local **Parakeet-MLX**, **MLX Whisper**, **faster-whisper**, AudioSet/emotion classifiers,
+CLIP and Sentence Transformers add ASR, event/content tagging and semantic topic search.
+Core indexing needs Python 3.12+, FFmpeg and SQLite FTS5; no pip dependencies or automatic model downloads.
+Candidate scores include reasons and source evidence. They are suggestions to review, not probabilities of a good clip.
+Exports include JPEG/MP4 previews, JSON markers, per-source LosslessCut CSV and precise FFmpeg/mpv commands.
+Existing `hook`, `shorts`, `cut`, `polish` and other editing commands remain available.
+
+**Try it offline:** `python3 examples/local_search_demo.py --out demo-output`
+
+See [setup and practical workflows](docs/LOCAL_VIDEO_SEARCH.md),
+[October 2026 dependency research](docs/RESEARCH_2026-10.md),
+[validation and quality limits](docs/VALIDATION_LOCAL_SEARCH.md),
+and the [architecture decision](docs/adr/0001-local-video-library.md).
 
 ---
 
@@ -226,7 +254,8 @@ Drops `skill/universal-media-editor.md` into `~/.gg/skills/` on install. Claude 
 
 ## Honest limits
 
-- macOS only. The adaptive profile and Metal paths are Apple-specific.
+- The original editing shell targets macOS. The new Python library core also runs on Linux;
+  Parakeet-MLX and MLX Whisper require Apple Silicon.
 - `polish` is opinionated. It assumes spoken content. For music mastering, use `master` + `stems` directly.
 - Whisper models download on first transcribe (~150 MB for base.en, ~3 GB for large-v3). Cached to `~/.cache/whisper.cpp/`.
 - Subtitle timing from Whisper is segment-level. For word-level karaoke timing, run `faster-whisper` with `--word_timestamps`.
